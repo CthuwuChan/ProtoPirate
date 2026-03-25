@@ -139,7 +139,7 @@ void* subghz_protocol_encoder_kia_alloc(SubGhzEnvironment* environment) {
     instance->button = 0;
     instance->counter = 0;
 
-    instance->encoder.size_upload = (32 + 2 + 118 + 1) * KIA_TOTAL_BURSTS + (KIA_TOTAL_BURSTS - 1);
+    instance->encoder.size_upload = (64 + 2 + 118 + 1) * KIA_TOTAL_BURSTS + (KIA_TOTAL_BURSTS - 1);
     instance->encoder.upload = malloc(instance->encoder.size_upload * sizeof(LevelDuration));
     instance->encoder.repeat =
         10; // High repeat count for continuous transmission while button is held
@@ -202,7 +202,7 @@ static void subghz_protocol_encoder_kia_get_upload(SubGhzProtocolEncoderKIA* ins
             instance->encoder.upload[index++] = level_duration_make(false, KIA_INTER_BURST_GAP_US);
         }
 
-        for(int i = 0; i < 32; i++) {
+        for(int i = 0; i < 64; i++) {
             bool is_high = (i % 2) == 0;
             instance->encoder.upload[index++] =
                 level_duration_make(is_high, subghz_protocol_kia_const.te_short);
@@ -575,7 +575,7 @@ void subghz_protocol_decoder_kia_feed(void* context, bool level, uint32_t durati
              subghz_protocol_kia_const.te_delta) &&
             (DURATION_DIFF(instance->decoder.te_last, subghz_protocol_kia_const.te_long) <
              subghz_protocol_kia_const.te_delta)) {
-            if(instance->header_count > 15) {
+            if(instance->header_count > 30) {
                 instance->decoder.parser_step = KIADecoderStepSaveDuration;
                 instance->decoder.decode_data = 0;
                 instance->decoder.decode_count_bit = 1;
