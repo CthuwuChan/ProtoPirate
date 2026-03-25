@@ -14,7 +14,6 @@ static const SubGhzBlockConst subghz_protocol_kia_const = {
 #define KIA_TOTAL_BURSTS       2
 #define KIA_INTER_BURST_GAP_US 25000
 #define KIA_V1_HEADER_PULSES 64
-#define KIA_MIN_HEADER_PULSES 30
 
 struct SubGhzProtocolDecoderKIA {
     SubGhzProtocolDecoderBase base;
@@ -577,7 +576,7 @@ void subghz_protocol_decoder_kia_feed(void* context, bool level, uint32_t durati
              subghz_protocol_kia_const.te_delta) &&
             (DURATION_DIFF(instance->decoder.te_last, subghz_protocol_kia_const.te_long) <
              subghz_protocol_kia_const.te_delta)) {
-            if(instance->header_count > KIA_MIN_HEADER_PULSES) {
+            if(instance->header_count > 15) {
                 instance->decoder.parser_step = KIADecoderStepSaveDuration;
                 instance->decoder.decode_data = 0;
                 instance->decoder.decode_count_bit = 1;
